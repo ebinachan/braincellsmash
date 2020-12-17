@@ -2,4 +2,6 @@
 Logstash hacks for Syslog
 
 
-Copy .conf files to /etc/logstash/conf.d/ and restart Logstash.
+Copy combo.conf to /etc/logstash/conf.d/ and restart Logstash.
+
+Tested with: https://grokdebug.herokuapp.com/
