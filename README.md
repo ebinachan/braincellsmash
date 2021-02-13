@@ -24,16 +24,22 @@ logging host inside CENT8GRAFANA2 17/5143
 ```
 
 
-Cisco IOSXR RFC5424 beta:
+Cisco IOSXR beta:
 ```
-logging format rfc5424/bsd
+clock timezone EET 2
+service timestamps log datetime localtime msec show-timezone year
+service timestamps debug datetime localtime msec show-timezone year
+no logging format rfc5424/bsd
 logging 10.10.10.10 vrf default severity info port 5141
 logging source-interface Loopback0
 logging hostnameprefix __DISCOBEAR
 logging suppress duplicates
 
+#RFC
 <190>1 2020 Dec 11 16:05:32.051 EET __DISCOBEAR config 65960 - - 5300: RP/0/RSP0/CPU0:config[65960]: %HA-HA_WD_LIB-6-UNREG_PROC_SUCCESS : Memory state un-registration is success
-<%{POSINT:pri}>%{POSINT:version}%{SPACE}%{DATA:log_date}%{SPACE}__%{DATA:hostname} %{DATA:extjob}: %{DATA:slot}:%{DATA:job_id}: %%{DATA:facility}-%{INT:lvl}-%{DATA:facility_mnemonic} : %{GREEDYDATA:message}
+#Default XR
+<187>883282: MAJDA702 RP/0/RP0/CPU0:2021 Feb 13 10:25:44.652 UTC: tcp[141]: %IP-TCP-3-BADAUTH : Invalid  digest from 1.2.3.4:20923 to 1.2.3.5:179 for vrf:default (0x60000000)
+<%{POSINT:pri}>%{POSINT:seq}: %{DATA:hostname} %{DATA:slot}:(%{YEAR:year})? %{MONTH:month} %{MONTHDAY:monthday} %{TIME:time} (%{DATA:tz})?:%{DATA:job_id}: %%{DATA:facility}-%{INT:lvl}-%{DATA:facility_mnemonic} : %{GREEDYDATA:message}
 ```
 
 
