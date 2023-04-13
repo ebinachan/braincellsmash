@@ -1,0 +1,347 @@
+{
+	"info": {
+		"_postman_id": "5fd6cabd-3137-4c22-8eb7-18399f8da919",
+		"name": "Elasticsearch7_Lab_SYSLOG",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "0000A_Delete_SYSLOG_Index_Template",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{PROTOCOL}}://{{ESHOST}}:9200/_index_template/{{SYSLOG_INDEX_TEMPLATE_NAME}}",
+					"protocol": "{{PROTOCOL}}",
+					"host": [
+						"{{ESHOST}}"
+					],
+					"port": "9200",
+					"path": [
+						"_index_template",
+						"{{SYSLOG_INDEX_TEMPLATE_NAME}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "0000B_Delete_SYSLOG_Component_Template",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{PROTOCOL}}://{{ESHOST}}:9200/_component_template/{{SYSLOG_COMPONENT_TEMPLATE_INC_MAPPING_NAME}}",
+					"protocol": "{{PROTOCOL}}",
+					"host": [
+						"{{ESHOST}}"
+					],
+					"port": "9200",
+					"path": [
+						"_component_template",
+						"{{SYSLOG_COMPONENT_TEMPLATE_INC_MAPPING_NAME}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "0001_Create_SYSLOG_Index_Lifecycle_Policy",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"policy\": {\r\n        \"phases\": {\r\n            \"hot\": {\r\n                \"min_age\": \"0ms\",\r\n                \"actions\": {\r\n                    \"rollover\": {\r\n                        \"max_size\": \"2gb\",\r\n                        \"max_age\": \"1d\"\r\n                    },\r\n                    \"set_priority\": {\r\n                        \"priority\": 100\r\n                    }\r\n                }\r\n            },\r\n            \"warm\": {\r\n                \"min_age\": \"1d\",\r\n                \"actions\": {}\r\n            },\r\n            \"delete\": {\r\n                \"min_age\": \"10d\",\r\n                \"actions\": {\r\n                    \"delete\": {\r\n                        \"delete_searchable_snapshot\": true\r\n                    }\r\n                }\r\n            }\r\n        }\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{PROTOCOL}}://{{ESHOST}}:9200/_ilm/policy/{{LIFECYCLE_POLICY_NAME}}",
+					"protocol": "{{PROTOCOL}}",
+					"host": [
+						"{{ESHOST}}"
+					],
+					"port": "9200",
+					"path": [
+						"_ilm",
+						"policy",
+						"{{LIFECYCLE_POLICY_NAME}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "0003_Create_SYSLOG_Component_Template_incl_Mappings",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"template\": {\r\n        \"mappings\": {\r\n            \"properties\": {\r\n                \"cid\": {\r\n                    \"type\": \"text\",\r\n                    \"fields\": {\r\n                        \"keyword\": {\r\n                            \"type\": \"keyword\",\r\n                            \"ignore_above\": 256\r\n                        }\r\n                    }\r\n                },\r\n                \"facility\": {\r\n                    \"type\": \"text\",\r\n                    \"fields\": {\r\n                        \"keyword\": {\r\n                            \"type\": \"keyword\",\r\n                            \"ignore_above\": 256\r\n                        }\r\n                    }\r\n                },\r\n                \"facility_mnemonic\": {\r\n                    \"type\": \"text\",\r\n                    \"fields\": {\r\n                        \"keyword\": {\r\n                            \"type\": \"keyword\",\r\n                            \"ignore_above\": 256\r\n                        }\r\n                    }\r\n                },\r\n                \"fingerprint\": {\r\n                    \"type\": \"text\",\r\n                    \"fields\": {\r\n                        \"keyword\": {\r\n                            \"type\": \"keyword\",\r\n                            \"ignore_above\": 256\r\n                        }\r\n                    }\r\n                },\r\n                \"host\": {\r\n                    \"type\": \"ip\",\r\n                    \"fields\": {\r\n                        \"keyword\": {\r\n                            \"type\": \"keyword\",\r\n                            \"ignore_above\": 256\r\n                        }\r\n                    }\r\n                },\r\n                \"hostip\": {\r\n                    \"type\": \"text\",\r\n                    \"fields\": {\r\n                        \"keyword\": {\r\n                            \"type\": \"keyword\",\r\n                            \"ignore_above\": 256\r\n                        }\r\n                    }\r\n                },\r\n                \"hostname\": {\r\n                    \"type\": \"text\",\r\n                    \"fields\": {\r\n                        \"keyword\": {\r\n                            \"type\": \"keyword\",\r\n                            \"ignore_above\": 256\r\n                        }\r\n                    }\r\n                },\r\n                \"job_id\": {\r\n                    \"type\": \"text\",\r\n                    \"fields\": {\r\n                        \"keyword\": {\r\n                            \"type\": \"keyword\",\r\n                            \"ignore_above\": 256\r\n                        }\r\n                    }\r\n                },\r\n                \"log_date\": {\r\n                    \"type\": \"text\",\r\n                    \"fields\": {\r\n                        \"keyword\": {\r\n                            \"type\": \"keyword\",\r\n                            \"ignore_above\": 256\r\n                        }\r\n                    }\r\n                },\r\n                \"lvl\": {\r\n                    \"type\": \"text\",\r\n                    \"fields\": {\r\n                        \"keyword\": {\r\n                            \"type\": \"keyword\",\r\n                            \"ignore_above\": 256\r\n                        }\r\n                    }\r\n                },\r\n                \"message\": {\r\n                    \"type\": \"text\",\r\n                    \"fields\": {\r\n                        \"keyword\": {\r\n                            \"type\": \"keyword\",\r\n                            \"ignore_above\": 256\r\n                        }\r\n                    }\r\n                },\r\n                \"seq\": {\r\n                    \"type\": \"text\",\r\n                    \"fields\": {\r\n                        \"keyword\": {\r\n                            \"type\": \"keyword\",\r\n                            \"ignore_above\": 256\r\n                        }\r\n                    }\r\n                },\r\n                \"slot\": {\r\n                    \"type\": \"text\",\r\n                    \"fields\": {\r\n                        \"keyword\": {\r\n                            \"type\": \"keyword\",\r\n                            \"ignore_above\": 256\r\n                        }\r\n                    }\r\n                },\r\n                \"tags\": {\r\n                    \"type\": \"text\",\r\n                    \"fields\": {\r\n                        \"keyword\": {\r\n                            \"type\": \"keyword\",\r\n                            \"ignore_above\": 256\r\n                        }\r\n                    }\r\n                },\r\n                \"type\": {\r\n                    \"type\": \"text\",\r\n                    \"fields\": {\r\n                        \"keyword\": {\r\n                            \"type\": \"keyword\",\r\n                            \"ignore_above\": 256\r\n                        }\r\n                    }\r\n                }\r\n            }\r\n        }\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{PROTOCOL}}://{{ESHOST}}:9200/_component_template/{{SYSLOG_COMPONENT_TEMPLATE_INC_MAPPING_NAME}}",
+					"protocol": "{{PROTOCOL}}",
+					"host": [
+						"{{ESHOST}}"
+					],
+					"port": "9200",
+					"path": [
+						"_component_template",
+						"{{SYSLOG_COMPONENT_TEMPLATE_INC_MAPPING_NAME}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "0004_Create_SYSLOG_Index_Template_Based_on_Component_and_Lifecycle",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"index_patterns\": [\r\n        \"{{SYSLOG_INDEX_PATTERN}}\"\r\n    ],\r\n    \"template\": {\r\n        \"settings\": {\r\n            \"number_of_shards\": 1,\r\n            \"number_of_replicas\": 0,\r\n            \"index.lifecycle.name\": \"{{LIFECYCLE_POLICY_NAME}}\",\r\n            \"index.lifecycle.rollover_alias\": \"{{SYSLOG_ROLLOVER_ALIAS}}\"\r\n        },\r\n        \"mappings\": {\r\n            \"_source\": {\r\n                \"enabled\": true\r\n            },\r\n            \"properties\": {\r\n                \"host_name\": {\r\n                    \"type\": \"keyword\"\r\n                },\r\n                \"created_at\": {\r\n                    \"type\": \"date\",\r\n                    \"format\": \"EEE MMM dd HH:mm:ss Z yyyy\"\r\n                }\r\n            }\r\n        },\r\n        \"aliases\": {\r\n            \"{{SYSLOG_INDEX_ALIAS}}\": {}\r\n        }\r\n    },\r\n    \"priority\": 500,\r\n    \"composed_of\": [\r\n        \"{{SYSLOG_COMPONENT_TEMPLATE_INC_MAPPING_NAME}}\"\r\n    ],\r\n    \"version\": 3,\r\n    \"_meta\": {\r\n        \"description\": \"SYSLOG Index Template\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{PROTOCOL}}://{{ESHOST}}:9200/_index_template/{{SYSLOG_INDEX_TEMPLATE_NAME}}",
+					"protocol": "{{PROTOCOL}}",
+					"host": [
+						"{{ESHOST}}"
+					],
+					"port": "9200",
+					"path": [
+						"_index_template",
+						"{{SYSLOG_INDEX_TEMPLATE_NAME}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "0005_Bootstrap_First_SYSLOG_Index",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"aliases\": {\r\n        \"{{SYSLOG_ROLLOVER_ALIAS}}\": {\r\n            \"is_write_index\": true\r\n        }\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{PROTOCOL}}://{{ESHOST}}:9200/syslogindex-000001/",
+					"protocol": "{{PROTOCOL}}",
+					"host": [
+						"{{ESHOST}}"
+					],
+					"port": "9200",
+					"path": [
+						"syslogindex-000001",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "1003_GET_SYSLOG_Index_mappings",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{PROTOCOL}}://{{ESHOST}}:9200/{{SYSLOG_INDEX_ALIAS}}/_mapping?pretty",
+					"protocol": "{{PROTOCOL}}",
+					"host": [
+						"{{ESHOST}}"
+					],
+					"port": "9200",
+					"path": [
+						"{{SYSLOG_INDEX_ALIAS}}",
+						"_mapping"
+					],
+					"query": [
+						{
+							"key": "pretty",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "1005_Get_All_items_from_SYSLOG",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{PROTOCOL}}://{{ESHOST}}:9200/{{SYSLOG_INDEX_ALIAS}}/_search?pretty",
+					"protocol": "{{PROTOCOL}}",
+					"host": [
+						"{{ESHOST}}"
+					],
+					"port": "9200",
+					"path": [
+						"{{SYSLOG_INDEX_ALIAS}}",
+						"_search"
+					],
+					"query": [
+						{
+							"key": "pretty",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "998_Delete_SYSLOG_Index_Alias",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{PROTOCOL}}://{{ESHOST}}:9200/syslogindex-000001/_alias/{{SYSLOG_INDEX_ALIAS}}",
+					"protocol": "{{PROTOCOL}}",
+					"host": [
+						"{{ESHOST}}"
+					],
+					"port": "9200",
+					"path": [
+						"syslogindex-000001",
+						"_alias",
+						"{{SYSLOG_INDEX_ALIAS}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "999_Delete_SYSLOG_Index",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{PROTOCOL}}://{{ESHOST}}:9200/syslogindex-000001",
+					"protocol": "{{PROTOCOL}}",
+					"host": [
+						"{{ESHOST}}"
+					],
+					"port": "9200",
+					"path": [
+						"syslogindex-000001"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "PROTOCOL",
+			"value": "http",
+			"type": "default"
+		},
+		{
+			"key": "ESHOST",
+			"value": "100.64.10.126",
+			"type": "default"
+		},
+		{
+			"key": "LIFECYCLE_POLICY_NAME",
+			"value": "rafap10days2g",
+			"type": "default"
+		},
+		{
+			"key": "SYSLOG_ROLLOVER_ALIAS",
+			"value": "syslogindex",
+			"type": "default"
+		},
+		{
+			"key": "SYSLOG_INDEX_ALIAS",
+			"value": "syslogindexalias",
+			"type": "default"
+		},
+		{
+			"key": "SYSLOG_INDEX_TEMPLATE_NAME",
+			"value": "syslog_index_template",
+			"type": "default"
+		},
+		{
+			"key": "SYSLOG_INDEX_PATTERN",
+			"value": "syslog*",
+			"type": "default"
+		},
+		{
+			"key": "SYSLOG_COMPONENT_TEMPLATE_INC_MAPPING_NAME",
+			"value": "syslog_component_template",
+			"type": "default"
+		}
+	]
+}
